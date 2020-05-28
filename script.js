@@ -1,38 +1,66 @@
-const meuCabecalho = document.querySelector("h1");
-meuCabecalho.textContent = 'Ola Mundo';
+let texto = document.querySelector("h1");
+texto.textContent = "Carvalho";
 
-let minhaImagem = document.querySelector('img');
+let head = document.querySelector("h2");
+let body = document.querySelector("p");
 
-minhaImagem.onclick = function(){
-    let meuSrc = minhaImagem.getAttribute('src');
-    if(meuSrc === 'images/a.jpg'){
-        minhaImagem.setAttribute('src', 'images/b.jpg');
-    }else{
-        minhaImagem.setAttribute('src', 'images/a.jpg');
+
+
+function addSquare(a, b)
+{
+    function square(x){
+        return x * x;
     }
+
+    return square(a) + square(b);
 }
 
-let meuBotao = document.querySelector("button");
-let meuCab = document.querySelector("h1");
+let a = addSquare(23,33);
+//texto.textContent = a;
 
+function loadJSON(file, callback)
+{
+    var xobj = new XMLHttpRequest();
+    xobj.overrideMimeType("application/json");
+    xobj.open('GET', file, true); // Replace 'my_data' with the path to your file
+    xobj.onreadystatechange = function () {
+        if (xobj.readyState == 4 && xobj.status == "200") {
+            // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+            callback(xobj.responseText);
+        }
+    };
+    xobj.send(null);
+}
 
-function defineUsuario(){
-    let meuNome = prompt('Digite seu nome');
-    if(!meuNome || meuNome==null){
-        defineUsuario();
-    }else{
-        localStorage.setItem('nome', meuNome); 
-        meuCab.textContent = 'Mozilla ' + meuNome
+//PROMISSE
+const readFile = file => new Promise((resolve, reject) => {
+    loadJSON(file, (contents) => {
+        if(contents){
+            resolve(contents);
+        }else{
+            reject(contents);
+        }
+    })
+});
+
+const data = async() => {
+    try{
+        const contents =  await readFile('data.json');
+        const info = await readFile('info.json');
+        return [JSON.parse(contents), JSON.parse(info)];
+    }catch(err){
+        console.log(err);
     }
+    
 }
 
-if(!localStorage.getItem('nome')){
-    defineUsuario();
-}else{
-    let nomeGuardado = localStorage.getItem('nome');
-    meuCab.textContent = 'Mozilla ' + nomeGuardado;
-}
+data().then((err)=>{
+    console.log(err);
+    //texto.textContent = err[0][0].name;
+    //head.textContent = err[1].head;
+    //body.textContent = err[1].body;
+});
+// readFile('data.json').then(contents => {
+//     console.log(contents);
+// });
 
-meuBotao.onclick = function(){
-    defineUsuario();
-}
