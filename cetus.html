@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+
+    <style>
+        h1{
+            font-size: 160px;
+            text-align: center;
+            margin: 90px 0 0 0;
+        }
+
+        h2{
+            margin: 0;
+            font-size: 90px;
+            color:red;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <audio src="sound/beep.mp3" id="beep" autostart="false" muted></audio>
+    <h1 id="time"><br>
+        
+    </h1>
+    <h2 id="state">s</h2>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#time").text("Loading...");
+            let show = function(){
+                $.get("https://api.warframestat.us/pc/cetusCycle", function(data){
+                    $("#time").text(data.timeLeft);
+                    $("#state").text(data.state);
+                    document.title = data.timeLeft;
+                });
+            }
+
+            let playSound = function ( soundname )
+            {
+                var thissound = document.getElementById( soundname );
+                thissound.play();
+            }
+
+            show();
+            playSound("beep");
+
+            setInterval(function(){
+                   show();
+                }, 60000)
+            })
+           
+    </script>
+</body>
+</html>
